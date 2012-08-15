@@ -1,0 +1,18 @@
+./NoteCleaner test
+LINE: blafg
+raw out
+TITLE
+LINE: -note
+raw out
+LINE: 	SUB TITLE 
+title_FLAG
+LINE: sub note 
+raw out
+LINE: 	SUBSUB TITLE
+title_FLAG
+LINE: subsub note
+raw out
+LINE: 	
+title_FLAG
+LINE: 
+raw out
