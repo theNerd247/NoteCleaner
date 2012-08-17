@@ -38,6 +38,7 @@ void debug(string log)
 	cout << "DEBUG: " << log << endl; 
 }
 
+//parses raw text and formats it to markdown
 string& parseLine(string line)
 {
 	short index = 1;
@@ -66,18 +67,28 @@ string& parseLine(string line)
 		return *output;
 	}
 
+	//if the line begins with a character then it is a index 1 header. 
+	//skip parsing if it is
 	if(line.substr(0,1).find_first_of("abcdefghijklmopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ") != string::npos)
 	{
-		*output="\n#"+line;
+		*output="\n#"+line+"\n";
 		return *output;
 	}
+
+	if(line[0] == '\n') 
+	{
+		*output = "";
+		return *output;
+	}
+
+	//remove index delimiters 
 	while(line.find("\t-") != string::npos)
 	{
 		index++;
 		line = line.substr(line.find("\t-")+2);
 	}
 
-	//if there is a tab then it's a title	
+	//if there is a tab then it's a title - parse it	
 	if(line[0] == '\t')
 	{
 		index++;
@@ -108,25 +119,35 @@ string& parseLine(string line)
 				list+="+ "+line.substr(0,semcol_index)+"\n";
 				line = line.substr(semcol_index+1);
 			}
-			*output = title+"\n"+list;
+			*output = "__"+title+"__"+"\n\n"+list;
 		}
 		else
 		{
 			*output = "__"+line.substr(0,colon_index)+"__ - "
 				+line.substr(colon_index+1);
 		}
-		*output = *output+"  ";
+		*output = ">"+*output+"  ";
 	}
 	else if(title_flag == true)
 	{
 		*output=line;
 		for(int i=0;i<index;i++)
 			*output = "#"+*output;	
-		*output = "\n"+*output;
+		*output = "\n"+*output+"\n";
 	}
 	else
 	{
-		*output = line+"  ";
+		*output = ">"+line+"  ";
+	}
+
+	//check for links
+	if(output->find(".com") != string::npos || 
+		output->find(".org") != string::npos || 
+		output->find(".net") != string::npos ||
+		output->find(".html") != string::npos ||
+		output->find(".edu") != string::npos)
+	{
+		*output = "<"+*output+">  ";
 	}
 
 	return *output;
