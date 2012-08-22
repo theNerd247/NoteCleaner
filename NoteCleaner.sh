@@ -7,12 +7,9 @@ if [[ -z $1 ]] ; then
 fi
 
 NAME=$1
-echo $NAME
-echo $2
 /usr/bin/NoteCleaner/NoteCleaner $1 $2 
 if [[ -n $2 ]] ; then
 	NAME=$2	
 fi
-echo $NAME
 Markdown.pl --html4tags $NAME.mkdn > $NAME.html
 rm $NAME.mkdn
