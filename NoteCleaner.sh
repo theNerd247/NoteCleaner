@@ -1,10 +1,18 @@
 #!/bin/bash
 
 if [[ -z $1 ]] ; then 
-	echo "usage: NoteCleaner [path to text file]"
+	echo "usage: NoteCleaner [options -f] [path to text file]"
+	echo "     -f: also exports a flash card text file to contain definitions"
 	exit 1
 fi
 
-/usr/bin/NoteCleaner/NoteCleaner $1
-Markdown.pl --html4tags $1.mkdn > $1.html
-rm $1.mkdn
+NAME=$1
+echo $NAME
+echo $2
+/usr/bin/NoteCleaner/NoteCleaner $1 $2 
+if [[ -n $2 ]] ; then
+	NAME=$2	
+fi
+echo $NAME
+Markdown.pl --html4tags $NAME.mkdn > $NAME.html
+rm $NAME.mkdn

@@ -17,6 +17,8 @@ int code_flag = 0;
 string code_file_path;
 string code_file_text;
 string file_path;
+string def_buffer = "";
+string contents = "";
 
 /*
  * writes the given string to the file at given path
@@ -63,7 +65,7 @@ string& parseLine(string line)
 	{
 		code_flag = 1;
 		code_file_path = file_path+"/"+line.substr(6);
-		*output = "\n**EXAMPLE CODE** See: "+code_file_path;
+		*output = "\n**EXAMPLE CODE** See: ["+line.substr(6)+"][]\n["+line.substr(6)+"]: "+line.substr(6);
 		return *output;
 	}
 
@@ -125,6 +127,7 @@ string& parseLine(string line)
 		{
 			*output = "__"+line.substr(0,colon_index)+"__ - "
 				+line.substr(colon_index+1);
+			def_buffer+= line.substr(0,colon_index)+"\t"+line.substr(colon_index+1)+"\n";
 		}
 		*output = ">"+*output+"  ";
 	}
@@ -137,7 +140,7 @@ string& parseLine(string line)
 	}
 	else
 	{
-		*output = ">"+line+"  ";
+		*output = "> -"+line+"  ";
 	}
 
 	//check for links
@@ -195,8 +198,14 @@ int main(int argc, char* args[])
 	}
 
 	//convert the char[] to a string object
-	string arg1 (args[1]);	
-	if(arg1.compare("--help") == 0)
+	string *arg1 = new string (args[1]);	
+	bool flash_flag = false;
+	if(*arg1 == "-f")
+	{
+		flash_flag = true;
+		arg1 = new string(args[2]);
+	}
+	if(*arg1 == "--help")
 	{
 		cout << "NoteCleaner file_path \n\t file_path - path to the file to clean" << endl;
 		return 0;
@@ -204,9 +213,14 @@ int main(int argc, char* args[])
 
 	else
 	{
-		file_path = arg1.substr(0,arg1.find_last_of("/"));
-		if(arg1.find_last_of("/") == string::npos)
+		int index = arg1->find_last_of("/");
+		//set the file path of the file to write
+		file_path = arg1->substr(0,index);
+		if(index == -1)
 			file_path=".";
-		writeFile(arg1+".mkdn",getFileText(args[1]));
+		writeFile(*arg1+".mkdn",getFileText(arg1->c_str()));
+		
+		if(def_buffer != "" && flash_flag == true)
+			writeFile(*arg1+".flsh",def_buffer);
 	}
 }
