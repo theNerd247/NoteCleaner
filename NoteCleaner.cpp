@@ -20,6 +20,19 @@ string file_path;
 string def_buffer = "";
 string contents = "";
 
+namespace NoteCleaner
+{
+	class NoteCleaner
+	{
+		public:
+			NoteCleaner(arguments);
+			virtual ~NoteCleaner();
+		
+		private:
+			int x;
+	};
+} /* NoteCleaner */ 
+
 /*
  * writes the given string to the file at given path
  */
